@@ -1,0 +1,35 @@
+# CMake build outputs
+/build/
+/out/
+/cmake-build-*/
+
+# Visual Studio user settings and generated project files
+/.vs/
+*.sln
+*.suo
+*.user
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# Compiler/linker outputs (including Visual Studio's x64/Debug folders)
+**/[Dd]ebug/
+**/[Rr]elease/
+**/x64/
+**/x86/
+*.obj
+*.pdb
+*.idb
+*.ilk
+*.ipch
+*.tlog
+*.log
+*.exe
+*.dll
+*.lib
+*.exp
+*.res
+
+# Windows Explorer metadata
+Thumbs.db
+Desktop.ini
