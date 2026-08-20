@@ -4,6 +4,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "Client.h"
+#include "Game.h"
 
 #define MAX_LOADSTRING 100
 
@@ -42,6 +43,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLIENT));
 
     MSG msg;
+    unique_ptr<Game> game = make_unique<Game>();
+    game->Init();
 
     // Main message loop:
     while (true)
@@ -59,6 +62,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
 
         // TODO: Game Logic
+        game->Update();
 
     }
 
@@ -86,7 +90,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENT));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_CLIENT);
+    wcex.lpszMenuName   = nullptr;
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
