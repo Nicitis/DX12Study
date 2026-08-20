@@ -1,6 +1,7 @@
 # CMake build outputs
 /build/
 /out/
+/Output/
 /cmake-build-*/
 
 # Visual Studio user settings and generated project files
