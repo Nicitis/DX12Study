@@ -23,8 +23,8 @@ target_precompile_headers(Engine PRIVATE Engine/pch.h)
 target_include_directories(Engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Engine")
 target_link_libraries(Engine PUBLIC d3d12 dxgi dxguid d3dcompiler)
 set_target_properties(Engine PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${DX12STUDY_OUTPUT_DIR}/$<CONFIG>"
-    LIBRARY_OUTPUT_DIRECTORY "${DX12STUDY_OUTPUT_DIR}/$<CONFIG>"
+    ARCHIVE_OUTPUT_DIRECTORY "${DX12STUDY_OUTPUT_DIR}"
+    LIBRARY_OUTPUT_DIRECTORY "${DX12STUDY_OUTPUT_DIR}"
 )
 
 add_executable(Client WIN32
@@ -46,7 +46,7 @@ target_compile_definitions(Client PRIVATE UNICODE _UNICODE)
 target_precompile_headers(Client PRIVATE Client/pch.h)
 target_link_libraries(Client PRIVATE Engine)
 set_target_properties(Client PROPERTIES
-    RUNTIME_OUTPUT_DIRECTORY "${DX12STUDY_OUTPUT_DIR}/$<CONFIG>"
+    RUNTIME_OUTPUT_DIRECTORY "${DX12STUDY_OUTPUT_DIR}"
 )
 
 if(MSVC)
