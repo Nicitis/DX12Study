@@ -10,6 +10,11 @@ public:
 
 	void Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapChain, shared_ptr<DescriptorHeap> descHeap);
 	void WaitSync();
+		
+	void RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect);
+	void RenderEnd();
+
+	ComPtr<ID3D12CommandQueue> GetCmdQueue() { return _cmdQueue; }
 
 private:
 	// CommandQueue : DX12ø° µÓ¿Â

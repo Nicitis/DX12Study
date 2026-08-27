@@ -21,6 +21,7 @@ void Engine::Init(const WindowInfo& info)
 	_descHeap = make_shared<DescriptorHeap>();
 
 	_device->Init();
+	_cmdQueue->Init(_device->GetDevice(), _swapChain, _descHeap);
 }
 
 void Engine::Render()
