@@ -54,3 +54,50 @@ void CommandQueue::WaitSync()
 		::WaitForSingleObject(_fenceEvent, INFINITE);
 	}
 }
+
+void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
+{
+	_cmdAlloc->Reset();
+	_cmdList->Reset(_cmdAlloc.Get(), nullptr);
+
+	// 현재 백버퍼 리소스를 얻어 이를 GPU 작업 용도로 활용하겠다, 를 선언
+	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		_swapChain->GetCurrentBackBufferResource().Get(),	// 1. 현재 백버퍼 리소스 획득
+		D3D12_RESOURCE_STATE_PRESENT,						// 2. 화면 출력
+		D3D12_RESOURCE_STATE_RENDER_TARGET);				// 3. 외주 결과물
+
+	_cmdList->ResourceBarrier(1, &barrier);
+
+	// Set the viewport scissor rect. This needs to be reset whenever the command list is reset.
+	_cmdList->RSSetViewports(1, vp);
+	_cmdList->RSSetScissorRects(1, rect);
+
+	// Specify the buffers we are going to render to.
+	D3D12_CPU_DESCRIPTOR_HANDLE backBufferView = _descHeap->GetBackBufferView();		// 백버퍼 설정
+	_cmdList->ClearRenderTargetView(backBufferView, Colors::LightSteelBlue, 0, nullptr); // 기본 색 설정
+	_cmdList->OMSetRenderTargets(1, &backBufferView, FALSE, nullptr);
+}
+
+void CommandQueue::RenderEnd()
+{
+	// RenderBegin의 역순: RT에서 Present 순
+	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+		_swapChain->GetCurrentBackBufferResource().Get(),	// 1. 현재 백버퍼 리소스 획득
+		D3D12_RESOURCE_STATE_RENDER_TARGET,					// 2. 외주 결과물
+		D3D12_RESOURCE_STATE_PRESENT);						// 3. 화면 출력
+
+	_cmdList->ResourceBarrier(1, &barrier);
+	_cmdList->Close(); // 배리어닫기
+
+	// 커맨드 리스트 수행 
+	ID3D12CommandList* cmdListArr[] = { _cmdList.Get() };
+	_cmdQueue->ExecuteCommandLists(_countof(cmdListArr), cmdListArr);
+
+	_swapChain->Present();
+
+	// 프레임 커맨드가 완료될 때까지 대기한다. 이 방법 자체는 사실 단순화를 위해
+	// 비효율적으로 굴리는건데, 나중에 좀 더 효율적인 렌더링 방법을 알아볼 예정.
+	WaitSync();
+
+	_swapChain->SwapIndex(); // 스왑
+}

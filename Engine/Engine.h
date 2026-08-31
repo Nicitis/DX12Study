@@ -8,6 +8,11 @@ public:
 
 	void Init(const WindowInfo& info);
 	void Render();
+
+public:
+	void RenderBegin();	// 커맨드 큐에 렌더링에 필요한 요소들을 전달하는 과정
+	void RenderEnd();	// 커맨드 큐의 요소를 실제 GPU에 전달하여 렌더링 수행
+
 	void ResizeWindow(int32 width, int32 height);
 
 private:

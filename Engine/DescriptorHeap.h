@@ -11,6 +11,10 @@ class DescriptorHeap
 public:
 	void Init(ComPtr<ID3D12Device> device, shared_ptr<class SwapChain> swapChain);
 
+	D3D12_CPU_DESCRIPTOR_HANDLE GetRTV(int32 idx) { return _rtvHandle[idx]; }
+	D3D12_CPU_DESCRIPTOR_HANDLE GetBackBufferView();
+
+
 private:
 	// rtv: ∑ª¥ı ≈∏∞Ÿ ∫‰¿« æ‡¿⁄(Ω«¡¶ ∏Æº“Ω∫!)
 	ComPtr<ID3D12DescriptorHeap>	_rtvHeap;
