@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "SwapChain.h"
-
+#include "Engine.h"
 
 void SwapChain::Init(const WindowInfo& info, ComPtr<ID3D12Device> device, ComPtr<IDXGIFactory> dxgi, ComPtr<ID3D12CommandQueue> cmdQueue)
 {
@@ -55,7 +55,7 @@ void SwapChain::CreateRTV(ComPtr<ID3D12Device> device)
 	// DX11의 RTV(RenderTargetView), DSV(DepthStencilView), 
 	// CBV(ConstantBufferView), SRV(ShaderResourceView), UAV(UnorderedAccessView)를 전부!
 
-	int32 rtvHeapSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+	int32 rtvHeapSize = DEVICE->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 
 	D3D12_DESCRIPTOR_HEAP_DESC rtvDesc;
 	rtvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;		// 타입: RTV
@@ -65,7 +65,7 @@ void SwapChain::CreateRTV(ComPtr<ID3D12Device> device)
 
 	// 같은 종류의 데이터끼리 배열로 관리
 	// RTV 목록 : [ ] [ ]
-	device->CreateDescriptorHeap(&rtvDesc, IID_PPV_ARGS(&_rtvHeap));
+	DEVICE->CreateDescriptorHeap(&rtvDesc, IID_PPV_ARGS(&_rtvHeap));
 
 	// 힙이 시작되는 주소를 가져옴
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHeapBegin = _rtvHeap->GetCPUDescriptorHandleForHeapStart();
@@ -74,7 +74,7 @@ void SwapChain::CreateRTV(ComPtr<ID3D12Device> device)
 	{
 		// 시작 주소 계산: (_rtvHandle[i].ptr = rtvHeapBegin.ptr + i * _rtvHeapSize)
 		_rtvHandle[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE(rtvHeapBegin, i * rtvHeapSize);
-		device->CreateRenderTargetView(_rtvBuffer[i].Get(), nullptr, _rtvHandle[i]);
+		DEVICE->CreateRenderTargetView(_rtvBuffer[i].Get(), nullptr, _rtvHandle[i]);
 	}
 }
 
