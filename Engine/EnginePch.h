@@ -56,6 +56,12 @@ struct WindowInfo
 	bool	bWindowed;	// 창모드 or 전체화면
 };
 
+struct Vertex
+{
+	Vec3 pos;
+	Vec4 color;
+};
+
 extern unique_ptr<class Engine> GEngine;
 
 #define DEVICE		GEngine->GetDevice()->GetDevice()
