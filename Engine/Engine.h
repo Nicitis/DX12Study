@@ -5,6 +5,8 @@
 #include "CommandQueue.h"
 #include "SwapChain.h"
 #include "RootSignature.h"
+#include "Mesh.h"
+#include "Shader.h"
 
 
 class Engine
