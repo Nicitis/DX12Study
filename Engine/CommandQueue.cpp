@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CommandQueue.h"
 #include "SwapChain.h"
+#include "Engine.h"
 
 void CommandQueue::Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapChain)
 {
@@ -63,6 +64,9 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 		_swapChain->GetBackRTVBuffer().Get(),	// 1. 현재 백버퍼 리소스 획득
 		D3D12_RESOURCE_STATE_PRESENT,						// 2. 화면 출력
 		D3D12_RESOURCE_STATE_RENDER_TARGET);				// 3. 외주 결과물
+
+	// Root Signature 서명해주기
+	_cmdList->SetGraphicsRootSignature(ROOT_SIGNATURE.Get());
 
 	_cmdList->ResourceBarrier(1, &barrier);
 

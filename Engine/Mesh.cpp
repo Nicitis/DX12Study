@@ -35,5 +35,11 @@ void Mesh::Render()
 {
 	CMD_LIST->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	CMD_LIST->IASetVertexBuffers(0, 1, &_vertexBufferView); // Slot: (0~15)
+
+	// TODO
+	// 1. Buffer에다가 데이터를 세팅한다.
+	// 2. Buffer의 주소를 Register에 전송한다.
+	//CMD_LIST-> (0, ? ? );
+
 	CMD_LIST->DrawInstanced(_vertexCount, 1, 0, 0);
 }
