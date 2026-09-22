@@ -34,3 +34,6 @@
 # Windows Explorer metadata
 Thumbs.db
 Desktop.ini
+
+# CMake user-local presets
+CMakeUserPresets.json

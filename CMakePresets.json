@@ -1,0 +1,17 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": { "major": 3, "minor": 21, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "msvc",
+      "displayName": "Visual Studio (x64)",
+      "description": "Uses the newest installed Visual Studio generator; it is multi-config, so Debug/Release are picked at build time.",
+      "binaryDir": "${sourceDir}/build/msvc",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "debug", "displayName": "Debug", "configurePreset": "msvc", "configuration": "Debug" },
+    { "name": "release", "displayName": "Release", "configurePreset": "msvc", "configuration": "Release" }
+  ]
+}
