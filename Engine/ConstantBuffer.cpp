@@ -44,6 +44,26 @@ void ConstantBuffer::CreateBuffer()
 	_cbvBuffer->Map(0, nullptr, reinterpret_cast<void**>(&_mappedBuffer));
 }
 
+void ConstantBuffer::Clear()
+{
+	_currentIndex = 0;
+}
 
+void ConstantBuffer::PushData(int32 rootParamIndex, void* buffer, uint32 size)
+{
+	assert(_currentIndex < _elementSize);
 
+	::memcpy(&_mappedBuffer[_currentIndex * _elementSize], buffer, size);
 
+	D3D12_GPU_VIRTUAL_ADDRESS address = GetGpuVirtualAddress(_currentIndex);
+	CMD_LIST->SetGraphicsRootConstantBufferView(rootParamIndex, address);
+	_currentIndex++;
+}
+
+D3D12_GPU_VIRTUAL_ADDRESS ConstantBuffer::GetGpuVirtualAddress(uint32 index)
+{
+	// 첫칸 주소 구하기: GetGPUVirtualAddress
+	D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = _cbvBuffer->GetGPUVirtualAddress();
+	objCBAddress += index * _elementSize; // 앞선 버퍼 크기만큼 더해줘서 주소 구하기(배열형으로 가정)
+	return objCBAddress;
+}
