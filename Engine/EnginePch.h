@@ -62,6 +62,11 @@ struct Vertex
 	Vec4 color;
 };
 
+struct Transform
+{
+	Vec4 offset;
+};
+
 extern unique_ptr<class Engine> GEngine;
 
 #define DEVICE			GEngine->GetDevice()->GetDevice()

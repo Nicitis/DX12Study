@@ -39,7 +39,8 @@ void Mesh::Render()
 	// TODO
 	// 1. Buffer에다가 데이터를 세팅한다.
 	// 2. Buffer의 주소를 Register에 전송한다.
-	//CMD_LIST-> (0, ? ? );
+	GEngine->GetCB()->PushData(0, &_transform, sizeof(_transform));
+	GEngine->GetCB()->PushData(1, &_transform, sizeof(_transform));
 
 	CMD_LIST->DrawInstanced(_vertexCount, 1, 0, 0);
 }

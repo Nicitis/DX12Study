@@ -67,6 +67,7 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 
 	// Root Signature 서명해주기
 	_cmdList->SetGraphicsRootSignature(ROOT_SIGNATURE.Get());
+	GEngine->GetCB()->Clear(); // 깔끔하게 정리!
 
 	_cmdList->ResourceBarrier(1, &barrier);
 
