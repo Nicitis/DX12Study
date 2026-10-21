@@ -25,6 +25,7 @@ void ConstantBuffer::Init(uint32 size, uint32 count)
 	_elementCount = count;
 
 	CreateBuffer();
+	CreateView();
 }
 
 void ConstantBuffer::CreateBuffer()
@@ -42,6 +43,11 @@ void ConstantBuffer::CreateBuffer()
 		IID_PPV_ARGS(&_cbvBuffer));
 
 	_cbvBuffer->Map(0, nullptr, reinterpret_cast<void**>(&_mappedBuffer));
+}
+
+void ConstantBuffer::CreateView()
+{
+	// 엄... 이게 뭔 소리인지는 모르겠지만 아무튼 뷰 만들기 중
 }
 
 void ConstantBuffer::Clear()
@@ -66,4 +72,9 @@ D3D12_GPU_VIRTUAL_ADDRESS ConstantBuffer::GetGpuVirtualAddress(uint32 index)
 	D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = _cbvBuffer->GetGPUVirtualAddress();
 	objCBAddress += index * _elementSize; // 앞선 버퍼 크기만큼 더해줘서 주소 구하기(배열형으로 가정)
 	return objCBAddress;
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE ConstantBuffer::GetCpuHandle(uint32 index)
+{
+	return D3D12_CPU_DESCRIPTOR_HANDLE();
 }

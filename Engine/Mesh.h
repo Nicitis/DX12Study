@@ -5,7 +5,7 @@ class Mesh
 {
 public:
 	void Init(vector<Vertex>& vec);
-	void Render();
+	void Render(); 
 
 	void SetTransform(const Transform t) { _transform = t; }
 
