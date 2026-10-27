@@ -47,7 +47,26 @@ void ConstantBuffer::CreateBuffer()
 
 void ConstantBuffer::CreateView()
 {
-	// 엄... 이게 뭔 소리인지는 모르겠지만 아무튼 뷰 만들기 중
+	D3D12_DESCRIPTOR_HEAP_DESC cbvDesc = {};
+	cbvDesc.NumDescriptors = _elementCount;
+	cbvDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+	cbvDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	DEVICE->CreateDescriptorHeap(&cbvDesc, IID_PPV_ARGS(&_cbvHeap));
+	
+	_cpuHandleBegin = _cbvHeap->GetCPUDescriptorHandleForHeapStart();
+	_handleIncrementSize = DEVICE->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+	// 위 두 개 값, 예를 들어 핸들별 간격은 os마다 달라질 수 있어 DEVICE에서 얻어와야 한다.
+
+	for (uint32 i = 0; i < _elementCount; ++i)
+	{
+		D3D12_CPU_DESCRIPTOR_HANDLE cbvHandle = GetCpuHandle(i);
+
+		D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
+		cbvDesc.BufferLocation = _cbvBuffer->GetGPUVirtualAddress() + static_cast<uint64>(_elementSize) * i;
+		cbvDesc.SizeInBytes = _elementSize; // CB size는 256바이트 단위로 정렬되어야 한다.
+
+		DEVICE->CreateConstantBufferView(&cbvDesc, cbvHandle);
+	}
 }
 
 void ConstantBuffer::Clear()
@@ -76,5 +95,6 @@ D3D12_GPU_VIRTUAL_ADDRESS ConstantBuffer::GetGpuVirtualAddress(uint32 index)
 
 D3D12_CPU_DESCRIPTOR_HANDLE ConstantBuffer::GetCpuHandle(uint32 index)
 {
-	return D3D12_CPU_DESCRIPTOR_HANDLE();
+	// CPU Handle + index * increment Size
+	return CD3DX12_CPU_DESCRIPTOR_HANDLE(_cpuHandleBegin, index * _handleIncrementSize);
 }
