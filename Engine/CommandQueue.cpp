@@ -68,6 +68,10 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 	// Root Signature 서명해주기
 	_cmdList->SetGraphicsRootSignature(ROOT_SIGNATURE.Get());
 	GEngine->GetCB()->Clear(); // 깔끔하게 정리!
+	GEngine->GetTableDescHeap()->Clear();
+
+	ID3D12DescriptorHeap* descHeap = GEngine->GetTableDescHeap()->GetDescriptorHeap().Get();
+	_cmdList->SetDescriptorHeaps(1, &descHeap); // 인자 상 Comptr이 아니라 실제 포인터 전달이 필요
 
 	_cmdList->ResourceBarrier(1, &barrier);
 

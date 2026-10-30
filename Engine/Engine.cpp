@@ -16,12 +16,14 @@ void Engine::Init(const WindowInfo& info)
 	_swapChain = make_shared<SwapChain>();
 	_rootSignature = make_shared<RootSignature>();
 	_cb = make_shared<ConstantBuffer>();
+	_tableDescHeap = make_shared<TableDescriptorHeap>();
 
 	_device->Init();
 	_cmdQueue->Init(_device->GetDevice(), _swapChain);
 	_swapChain->Init(info, _device->GetDevice(), _device->GetDXGI(), _cmdQueue->GetCmdQueue());
 	_rootSignature->Init(_device->GetDevice());
 	_cb->Init(sizeof(Transform), 256); // 버퍼에는 위치 정보가 들어온다고 가정
+	_tableDescHeap->Init(256);
 }
 
 void Engine::Render()
