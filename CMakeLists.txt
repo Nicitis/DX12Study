@@ -8,33 +8,32 @@ endif()
 
 set(DX12STUDY_OUTPUT_DIR "${CMAKE_SOURCE_DIR}/Output")
 
+# Sources are picked up by glob, so adding a file is just a matter of dropping it
+# into Engine/ or Client/.  CONFIGURE_DEPENDS re-runs the glob on every build
+# (via ZERO_CHECK in the generated solution), so new or deleted files are noticed
+# without re-running cmake by hand.  Create new files in those folders, not via
+# "Add > New Item" on the generated project, which would put them under build/.
+file(GLOB ENGINE_SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/Engine/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Engine/*.h"
+)
+file(GLOB CLIENT_SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/Client/*.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Client/*.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Client/*.rc"
+)
+# Icons are pulled in by Client.rc, and shaders are compiled at runtime by
+# D3DCompileFromFile: list them so they show up in the IDE, but never build them.
+file(GLOB CLIENT_ASSETS CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/Client/*.ico"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shader/*.hlsl"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Shader/*.hlsli"
+)
+set_source_files_properties(${CLIENT_ASSETS} PROPERTIES HEADER_FILE_ONLY TRUE)
+
 # Engine is a static library.  Client links the target itself (not a bare file
 # name), so CMake always picks the lib matching the configuration being built.
-add_library(Engine STATIC
-    Engine/CommandQueue.cpp
-    Engine/ConstantBuffer.cpp
-    Engine/Device.cpp
-    Engine/Engine.cpp
-    Engine/EnginePch.cpp
-    Engine/Mesh.cpp
-    Engine/pch.cpp
-    Engine/RootSignature.cpp
-    Engine/Shader.cpp
-    Engine/SwapChain.cpp
-    Engine/TableDescriptorHeap.cpp
-    Engine/CommandQueue.h
-    Engine/ConstantBuffer.h
-    Engine/d3dx12.h
-    Engine/Device.h
-    Engine/Engine.h
-    Engine/EnginePch.h
-    Engine/Mesh.h
-    Engine/pch.h
-    Engine/RootSignature.h
-    Engine/Shader.h
-    Engine/SwapChain.h
-    Engine/TableDescriptorHeap.h
-)
+add_library(Engine STATIC ${ENGINE_SOURCES})
 
 target_compile_features(Engine PUBLIC cxx_std_20)
 # EnginePch.h does `using namespace std;` before pulling in the Windows headers,
@@ -44,30 +43,7 @@ target_precompile_headers(Engine PRIVATE Engine/pch.h)
 target_include_directories(Engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Engine")
 target_link_libraries(Engine PUBLIC d3d12 dxgi dxguid d3dcompiler)
 
-add_executable(Client WIN32
-    Client/Client.cpp
-    Client/Game.cpp
-    Client/pch.cpp
-    Client/Client.rc
-    Client/Client.h
-    Client/framework.h
-    Client/Game.h
-    Client/pch.h
-    Client/Resource.h
-    Client/targetver.h
-    Client/Client.ico
-    Client/small.ico
-    Resources/Shader/default.hlsli
-)
-
-# Icons are pulled in by Client.rc, and the shader is compiled at runtime by
-# D3DCompileFromFile: list them so they show up in the IDE, but never build them.
-set_source_files_properties(
-    Client/Client.ico
-    Client/small.ico
-    Resources/Shader/default.hlsli
-    PROPERTIES HEADER_FILE_ONLY TRUE
-)
+add_executable(Client WIN32 ${CLIENT_SOURCES} ${CLIENT_ASSETS})
 
 target_compile_features(Client PRIVATE cxx_std_20)
 target_precompile_headers(Client PRIVATE Client/pch.h)
@@ -108,6 +84,4 @@ if(MSVC)
 endif()
 
 # Mirror the on-disk layout in the Solution Explorer.
-get_target_property(ENGINE_SOURCES Engine SOURCES)
-get_target_property(CLIENT_SOURCES Client SOURCES)
-source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${ENGINE_SOURCES} ${CLIENT_SOURCES})
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${ENGINE_SOURCES} ${CLIENT_SOURCES} ${CLIENT_ASSETS})
