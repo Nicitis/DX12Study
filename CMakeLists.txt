@@ -21,6 +21,7 @@ add_library(Engine STATIC
     Engine/RootSignature.cpp
     Engine/Shader.cpp
     Engine/SwapChain.cpp
+    Engine/TableDescriptorHeap.cpp
     Engine/CommandQueue.h
     Engine/ConstantBuffer.h
     Engine/d3dx12.h
@@ -32,6 +33,7 @@ add_library(Engine STATIC
     Engine/RootSignature.h
     Engine/Shader.h
     Engine/SwapChain.h
+    Engine/TableDescriptorHeap.h
 )
 
 target_compile_features(Engine PUBLIC cxx_std_20)
