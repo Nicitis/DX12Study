@@ -41,7 +41,10 @@ void TableDescriptorHeap::CommitTable()
 	// 그러므로 GPU에서 이해할 수 있게 GPU 핸들을 전달해준다.
 	D3D12_GPU_DESCRIPTOR_HANDLE handle = _descHeap->GetGPUDescriptorHandleForHeapStart();
 	handle.ptr += _currentGroupIndex * _groupSize;
-	CMD_LIST->SetGraphicsRootDescriptorTable(0, handle);
+	CMD_LIST->SetGraphicsRootDescriptorTable(0, handle); 
+	// 여기서 GPU 핸들을 전달해주면, GPU는 이 핸들을 통해 Shader Visible Heap에 접근할 수 있다.
+	// 이때 RootParameter의 인덱스는 CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, CBV_REGISTER_COUNT, 0)로 정의했으므로 
+	// 0번 인덱스에 접근한다는 것은 b0로부터 CBV_REGISTER_COUNT 개의 레지스터, 즉 b0~b4까지의 레지스터를 Shader Visible Heap에서 가져오겠다는 의미이다.
 
 	_currentGroupIndex++; // 다음 그룹을 넘어가기
 }
