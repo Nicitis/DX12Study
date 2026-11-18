@@ -40,7 +40,12 @@ target_compile_features(Engine PUBLIC cxx_std_20)
 # which makes `byte` ambiguous between std::byte and rpcndr.h's typedef.
 target_compile_definitions(Engine PUBLIC UNICODE _UNICODE _HAS_STD_BYTE=0)
 target_precompile_headers(Engine PRIVATE Engine/pch.h)
-target_include_directories(Engine PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/Engine")
+target_include_directories(Engine PUBLIC
+    "${CMAKE_CURRENT_SOURCE_DIR}/Engine"
+    # Third-party headers.  In the generated solution $(SolutionDir) is build/msvc/,
+    # not the project root, so the path is spelled from the source dir instead.
+    "${CMAKE_CURRENT_SOURCE_DIR}/Library"
+)
 target_link_libraries(Engine PUBLIC d3d12 dxgi dxguid d3dcompiler)
 
 add_executable(Client WIN32 ${CLIENT_SOURCES} ${CLIENT_ASSETS})
