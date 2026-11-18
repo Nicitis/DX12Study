@@ -44,7 +44,7 @@ target_include_directories(Engine PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/Engine"
     # Third-party headers.  In the generated solution $(SolutionDir) is build/msvc/,
     # not the project root, so the path is spelled from the source dir instead.
-    "${CMAKE_CURRENT_SOURCE_DIR}/Library"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Library/Include"
 )
 target_link_libraries(Engine PUBLIC d3d12 dxgi dxguid d3dcompiler)
 
